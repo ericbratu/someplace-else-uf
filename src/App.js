@@ -19,21 +19,38 @@ L.Icon.Default.mergeOptions({
 
 const App = () => {
   const [spots, setSpots] = useState([]);
-
+  const [newSpot, setNewSpot] = useState(null); 
+  const [description, setDescription] = useState("");
 
   const AddMarker = () => {
     useMapEvents({
       click: (e) => {
-        const description = prompt("Describe your spot:");
-        if (description) {
-          setSpots([
-            ...spots,
-            { lat: e.latlng.lat, lng: e.latlng.lng, description },
-          ]);
-        }
+        setNewSpot({
+          lat: e.latlng.lat,
+          lng: e.latlng.lng,
+          position: {
+            top: e.originalEvent.clientY - 100, 
+            left: e.originalEvent.clientX,
+          },
+        });
       },
     });
     return null;
+  };
+
+  const handleDescriptionChange = (e) => {
+    setDescription(e.target.value);
+  };
+
+  const handleSubmit = () => {
+    if (description) {
+      setSpots([
+        ...spots,
+        { lat: newSpot.lat, lng: newSpot.lng, description },
+      ]);
+      setNewSpot(null); // Hide the custom popup
+      setDescription(""); // Reset the description
+    }
   };
 
   return (
@@ -55,6 +72,34 @@ const App = () => {
         ))}
         <AddMarker />
       </MapContainer>
+
+      {newSpot && (
+        <div
+          style={{
+            position: "absolute",
+            top: `${newSpot.position.top - 70}px`,
+            left: `${newSpot.position.left - 105}px`,
+            backgroundColor: "white",
+            padding: "10px",
+            border: "1px solid black",
+            borderRadius: "5px",
+            zIndex: 1000,
+          }}
+        >
+          <textarea
+            value={description}
+            onChange={handleDescriptionChange}
+            placeholder="Describe your spot..."
+            rows="4"
+            cols="20"
+          />
+          <div>
+
+            <button onClick={() => setNewSpot(null)}>Cancel</button>
+            <button onClick={handleSubmit}>Save</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
