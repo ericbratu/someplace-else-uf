@@ -1,6 +1,9 @@
 import React, { useState } from "react";
+
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
+import maplibregl from "maplibre-gl";
+import { MapLibreGL } from "@maplibre/maplibre-gl-leaflet";
 import "./App.css";
 
 
@@ -35,7 +38,7 @@ const App = () => {
 
   return (
     <div className="App">
-      <h1>Campus Chill Spots</h1>
+      <h1>Somewhere Else</h1>
       <MapContainer
         center={[29.648668324475622, -82.34678527211761]} // Centered on UF
         zoom={17}
