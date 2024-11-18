@@ -2,8 +2,6 @@ import React, { useState } from "react";
 
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import maplibregl from "maplibre-gl";
-import { MapLibreGL } from "@maplibre/maplibre-gl-leaflet";
 import "./App.css";
 
 
@@ -17,22 +15,35 @@ L.Icon.Default.mergeOptions({
   shadowUrl: markerShadow,
 });
 
+const gainesvilleBounds = [
+  [29.5827, -82.6527],
+  [29.7075, -82.2812],
+];
+
+const bounds = L.latLngBounds(gainesvilleBounds);
+
 const App = () => {
   const [spots, setSpots] = useState([]);
-  const [newSpot, setNewSpot] = useState(null); 
+  const [newSpot, setNewSpot] = useState(null);
   const [description, setDescription] = useState("");
 
   const AddMarker = () => {
     useMapEvents({
       click: (e) => {
-        setNewSpot({
-          lat: e.latlng.lat,
-          lng: e.latlng.lng,
-          position: {
-            top: e.originalEvent.clientY - 100, 
-            left: e.originalEvent.clientX,
-          },
-        });
+        const latLng = e.latlng;
+        if (bounds.contains(latLng)) {
+          // If the click is inside the defined bounds, add a marker
+          setNewSpot({
+            lat: latLng.lat,
+            lng: latLng.lng,
+            position: {
+              top: e.originalEvent.clientY - 100,
+              left: e.originalEvent.clientX,
+            },
+          });
+        } else {
+          alert("You can only place a pinpoint within Gainesville city boundaries.");
+        }
       },
     });
     return null;
