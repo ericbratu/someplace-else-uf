@@ -1,6 +1,5 @@
 # Someplace Else
 
-## **Purpose**
 Someplace Else is a web app that lets users anonymously share and discover chill spots around UF's campus and the general Gainesville area. Whether it's a park, a café, or a bench with a great view, this project is built to bring people together by sharing the places that bring them peace. With this app, users can leave a little piece of themselves behind: an anonymous pinpoint of memories for others to discover.
 
 At its core, Someplace Else is a project aimed at promoting stress relief and connection. It’s a small way to remind people that there are still calm, beautiful places waiting to be discovered.
