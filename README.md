@@ -1,70 +1,78 @@
-# Getting Started with Create React App
+# Someplace Else
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## **Purpose**
+Someplace Else is a web app that lets users anonymously share and discover chill spots around UF's campus and the general Gainesville area. Whether it's a park, a café, or a bench with a great view, this project is built to bring people together by sharing the places that bring them peace. With this app, users can leave a little piece of themselves behind: an anonymous pinpoint of memories for others to discover.
 
-## Available Scripts
+At its core, Someplace Else is a project aimed at promoting stress relief and connection. It’s a small way to remind people that there are still calm, beautiful places waiting to be discovered.
 
-In the project directory, you can run:
+## **Features**
+- **Drop Pinpoints**: Users can drop anonymous pinpoints on a map, along with descriptions and optional photos of the location.
+- **Explore Spots**: View pinpoints from other users, including the photos and descriptions they’ve shared.
+- **Anonymity**: No sign-ups or logins; just share and explore freely.
 
-### `npm start`
+## **Technologies and Frameworks**
+- **React.js**: Used to build the frontend
+- **Leaflet.js**: Library used for rendering and managing the map on the frontend
+- **AWS Lambda**: In progress — developing serverless backend logic for handling API requests.
+- **AWS API Gateway**: In progress — configuring to manage API endpoints and connect the frontend to the backend.
+- **AWS DynamoDB**: In progress — setting up to store pinpoints, including coordinates, descriptions, and photos.
+- **GitHub Pages**: In progress — preparing to host the frontend and make the application publicly accessible.
+- **JavaScript, HTML, and CSS**: Core languages for developing the frontend and backend logic
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## **How It Works**
+**Adding a Pinpoint**:
+   - Click anywhere on the map within the boundary.
+   - Add a description and an optional photo to share the moment.
+   - Submit, and your pinpoint is saved anonymously.
 
-### `npm test`
+**Viewing Others' Pinpoints**:
+   - View pinpoints from others on the map.
+   - Click on a pinpoint marker to see the description and any accompanying photo.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm run build`
+## **Contributions**
+This is a personal repository, and thus any updates to the code will be from me. However, feel free to fork and use the program for your own ideas.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## **Author**
+### **Eric Bratu**  
+I am a third-year undergraduate student at the University of Florida studying Computer Science. I am passionate about creating meaningful applications that provide a genuine purpose.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `npm run eject`
+## Licenses
+This project uses the following third-party libraries and technologies:
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### React.js
+- **License**: MIT License  
+- **Copyright**: (c) Facebook, Inc. and its affiliates.  
+- **Summary**: Permission is granted to use, modify, and distribute this library for any purpose, provided the original copyright and license are retained.  
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Leaflet.js
+- **License**: BSD-2-Clause License  
+- **Copyright**: (c) Vladimir Agafonkin and Leaflet contributors.  
+- **Summary**: Redistribution and use in source and binary forms, with or without modification, are permitted, provided the original license and copyright notice are included.  
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### Axios
+- **License**: MIT License  
+- **Copyright**: (c) Matt Zabriskie.  
+- **Summary**: Permission is granted to use, modify, and distribute this library for any purpose, provided the original copyright and license are retained.  
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### AWS SDK for JavaScript
+- **License**: Apache 2.0 License  
+- **Copyright**: (c) Amazon.com, Inc. or its affiliates.  
+- **Summary**: Permission is granted to use, modify, and distribute this software, provided conditions specified in the license are met.  
 
-## Learn More
+### OpenStreetMap Data
+- **License**: Open Database License (ODbL)  
+- **Copyright**: OpenStreetMap contributors.  
+- **Summary**: You are free to copy, modify, and share the data as long as you attribute OpenStreetMap and its contributors and share any adapted database under the same license.  
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Node.js
+- **License**: MIT License  
+- **Copyright**: Node.js contributors.  
+- **Summary**: Permission is granted to use, modify, and distribute this library for any purpose, provided the original copyright and license are retained.  
 
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+### GitHub Pages
+- **License**: GitHub's Terms of Service  
+- **Summary**: Hosting is provided under GitHub's terms, allowing you to freely host static websites.
