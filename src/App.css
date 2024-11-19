@@ -40,7 +40,7 @@ button {
   background-color: #f1f1f1;
   border: none;
   padding: 10px 20px;
-  margin: 5px 5px;
+  margin: 5px 5.6px;
   font-size: 1rem;
   font-weight: 500;
   color: #5e6e77;
@@ -72,5 +72,5 @@ button:hover {
 }
 
 textarea {
-  width: 180px;
+  width: 184px;
 }
