@@ -76,70 +76,81 @@ const App = () => {
   const handlePhotoChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
-        try {
-            let processedFile = file;
-
-            // Check if the file is HEIC and convert it to JPEG
-            if (file.type === "image/heic" || file.name.endsWith(".HEIC")) {
-                try {
-                    const blob = await heic2any({ blob: file, toType: "image/jpeg" });
-                    processedFile = new File([blob], file.name.replace(".HEIC", ".jpg"), { type: "image/jpeg" });
-                } catch (error) {
-                    console.error("Error converting HEIC to JPEG:", error);
-                    alert("Failed to process HEIC file. Please try another image.");
-                    return;
-                }
-            }
-
-            // Compress the image
-            const options = {
-                maxSizeMB: 1,
-                maxWidthOrHeight: 2000,
-                useWebWorker: true,
-            };
-
-            let compressedFile = await imageCompression(processedFile, options);
-
-
-            while (compressedFile.size > 400 * 1024) { 
-                options.maxSizeMB = options.maxSizeMB / 2;
-                compressedFile = await imageCompression(compressedFile, options);
-            }
-
-            // Convert the compressed image to Base64
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setPhoto(reader.result); 
-            };
-            reader.readAsDataURL(compressedFile);
-        } catch (error) {
-            console.error("Error processing image:", error);
-            alert("Failed to process the image. Please try again.");
-        }
-    }
-};
-
-
-const handleSubmit = async () => {
-  if (description && newSpot) {
-      const payload = {
-          lat: newSpot.lat,
-          lng: newSpot.lng,
-          description,
-          photo, // Base64 string
-      };
-
       try {
-          const response = await axios.post(`${API_URL}/savePinpoint`, payload);
-          setSpots([...spots, response.data.item]);
-          setNewSpot(null);
-          setDescription("");
-          setPhoto(null);
+        let processedFile = file;
+  
+        // Convert HEIC to JPEG if needed
+        if (file.type === "image/heic" || file.name.endsWith(".HEIC")) {
+          const blob = await heic2any({ blob: file, toType: "image/jpeg" });
+          processedFile = new File([blob], file.name.replace(".HEIC", ".jpg"), { type: "image/jpeg" });
+        }
+  
+
+        const options = {
+          maxSizeMB: 3,
+          maxWidthOrHeight: 3000,
+          useWebWorker: true,
+        };
+        let compressedFile = await imageCompression(processedFile, options);
+  
+        while (compressedFile.size > 3 * 1024 * 1024) {
+          options.maxSizeMB /= 2;
+          compressedFile = await imageCompression(compressedFile, options);
+        }
+  
+
+        const fileName = `${Date.now()}_${compressedFile.name}`;
+  
+
+        const response = await axios.get(`${API_URL}/uploadURL`, {
+          params: {
+            name: fileName,
+            type: compressedFile.type,
+          },
+        });
+  
+        const { uploadURL, key } = response.data;
+  
+        // Upload the file to S3 using the pre-signed URL
+        await axios.put(uploadURL, compressedFile, {
+          headers: {
+            "Content-Type": compressedFile.type,
+          },
+        });
+  
+        setPhoto(key); // Store the image key for saving later
+  
       } catch (error) {
-          console.error("Error saving pinpoint:", error);
+        console.error("Error processing image:", error);
+        alert("Failed to process the image. Please try again.");
       }
-  }
-};
+    }
+  };
+
+
+
+  const handleSubmit = async () => {
+    if (description && newSpot) {
+      const payload = {
+        lat: newSpot.lat,
+        lng: newSpot.lng,
+        description,
+        photoKey: photo, // The S3 object key
+      };
+  
+      try {
+        const response = await axios.post(`${API_URL}/savePinpoint`, payload);
+        setSpots([...spots, response.data.item]);
+        setNewSpot(null);
+        setDescription("");
+        setPhoto(null);
+      } catch (error) {
+        console.error("Error saving pinpoint:", error);
+      }
+    }
+  };
+  
+
 
   return (
     <div className="App">
@@ -153,14 +164,21 @@ const handleSubmit = async () => {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        {spots.map((spot, idx) => (
-          <Marker key={idx} position={[spot.lat, spot.lng]}>
-            <Popup>
-              {spot.photo && <img src={spot.photo} alt="Spot" style={{ width: "100%", height: "100%", marginBottom: "10px" }} />}
-              <p>{spot.description}</p>
-            </Popup>
-          </Marker>
-        ))}
+{spots.map((spot, idx) => (
+  <Marker key={idx} position={[spot.lat, spot.lng]}>
+    <Popup>
+      {spot.photoUrl && (
+        <img
+          src={spot.photoUrl}
+          alt="Spot"
+          style={{ width: "100%", height: "auto", marginBottom: "10px" }}
+        />
+      )}
+      <p>{spot.description}</p>
+    </Popup>
+  </Marker>
+))}
+
         <AddMarker />
       </MapContainer>
 
