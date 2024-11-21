@@ -25,9 +25,14 @@ At its core, Someplace Else is a project aimed at promoting stress relief and co
    - Add a description and an optional photo to share the moment.
    - Submit, and your pinpoint is saved anonymously.
 
+![](https://github.com/ericbratu/someplace-else-uf/blob/workingbranch/src/assets/placegif.gif)
+
+
 **Viewing Others' Pinpoints**:
    - View pinpoints from others on the map.
    - Click on a pinpoint marker to see the description and any accompanying photo.
+
+![](https://github.com/ericbratu/someplace-else-uf/blob/workingbranch/src/assets/clickgif.gif)
 
 
 ## **Contributions**

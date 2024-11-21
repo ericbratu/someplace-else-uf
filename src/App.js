@@ -1,13 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import "./App.css";
+import axios from "axios";
+import heic2any from "heic2any";
+import imageCompression from "browser-image-compression";
+
 
 
 import L from "leaflet";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
 delete L.Icon.Default.prototype._getIconUrl;
+
+// API CALLING
+const API_URL = process.env.REACT_APP_API_URL;
 
 L.Icon.Default.mergeOptions({
   iconUrl: markerIcon,
@@ -27,6 +34,20 @@ const App = () => {
   const [description, setDescription] = useState("");
   const [photo, setPhoto] = useState(null);
 
+  useEffect(() => {
+    const fetchPinpoints = async () => {
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/getPinpoints`);
+        setSpots(response.data.items); // populate
+      } catch (error) {
+        console.error("Error fetching pinpoints:", error);
+      }
+    };
+
+    fetchPinpoints();
+  }, []);
+
+  
   const AddMarker = () => {
     useMapEvents({
       click: (e) => {
@@ -52,29 +73,84 @@ const App = () => {
     setDescription(e.target.value);
   };
 
-  const handlePhotoChange = (e) => {
-    // Handle the uploaded photo
+  const handlePhotoChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPhoto(reader.result); 
-      };
-      reader.readAsDataURL(file);
+      try {
+        let processedFile = file;
+  
+        // Convert HEIC to JPEG if needed
+        if (file.type === "image/heic" || file.name.endsWith(".HEIC")) {
+          const blob = await heic2any({ blob: file, toType: "image/jpeg" });
+          processedFile = new File([blob], file.name.replace(".HEIC", ".jpg"), { type: "image/jpeg" });
+        }
+  
+
+        const options = {
+          maxSizeMB: 3,
+          maxWidthOrHeight: 3000,
+          useWebWorker: true,
+        };
+        let compressedFile = await imageCompression(processedFile, options);
+  
+        while (compressedFile.size > 3 * 1024 * 1024) {
+          options.maxSizeMB /= 2;
+          compressedFile = await imageCompression(compressedFile, options);
+        }
+  
+
+        const fileName = `${Date.now()}_${compressedFile.name}`;
+  
+
+        const response = await axios.get(`${API_URL}/uploadURL`, {
+          params: {
+            name: fileName,
+            type: compressedFile.type,
+          },
+        });
+  
+        const { uploadURL, key } = response.data;
+  
+        // Upload the file to S3 using the pre-signed URL
+        await axios.put(uploadURL, compressedFile, {
+          headers: {
+            "Content-Type": compressedFile.type,
+          },
+        });
+  
+        setPhoto(key); // Store the image key for saving later
+  
+      } catch (error) {
+        console.error("Error processing image:", error);
+        alert("Failed to process the image. Please try again.");
+      }
     }
   };
 
-  const handleSubmit = () => {
-    if (description) {
-      setSpots([
-        ...spots,
-        { lat: newSpot.lat, lng: newSpot.lng, description, photo },
-      ]);
-      setNewSpot(null);
-      setDescription("");
-      setPhoto(null);
+
+
+  const handleSubmit = async () => {
+    if (description && newSpot) {
+      const payload = {
+        lat: newSpot.lat,
+        lng: newSpot.lng,
+        description,
+        photoKey: photo, // The S3 object key
+      };
+  
+      try {
+        const response = await axios.post(`${API_URL}/savePinpoint`, payload);
+        setSpots([...spots, response.data.item]);
+        setNewSpot(null);
+        setDescription("");
+        setPhoto(null);
+      } catch (error) {
+        console.error("Error saving pinpoint:", error);
+      }
     }
   };
+  
+
 
   return (
     <div className="App">
@@ -88,14 +164,21 @@ const App = () => {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        {spots.map((spot, idx) => (
-          <Marker key={idx} position={[spot.lat, spot.lng]}>
-            <Popup>
-              {spot.photo && <img src={spot.photo} alt="Spot" style={{ width: "100px", height: "100px", marginBottom: "10px" }} />}
-              <p>{spot.description}</p>
-            </Popup>
-          </Marker>
-        ))}
+{spots.map((spot, idx) => (
+  <Marker key={idx} position={[spot.lat, spot.lng]}>
+    <Popup>
+      {spot.photoUrl && (
+        <img
+          src={spot.photoUrl}
+          alt="Spot"
+          style={{ width: "100%", height: "auto", marginBottom: "10px" }}
+        />
+      )}
+      <p>{spot.description}</p>
+    </Popup>
+  </Marker>
+))}
+
         <AddMarker />
       </MapContainer>
 
@@ -115,15 +198,15 @@ const App = () => {
         >
           {/* Photo Upload */}
           <div style={{ marginBottom: "10px" }}>
-            <input type="file" accept="image/*" onChange={handlePhotoChange} />
+            <input type="file" accept="image/*,.heic" onChange={handlePhotoChange} />
             {photo && (
               <div style={{ marginTop: "10px" }}>
-                <img src={photo} alt="Uploaded" style={{ width: "100px", height: "100px" }} />
+                <img src={photo} alt="Uploaded" style={{ width: "100%", height: "100%" }} />
               </div>
             )}
           </div>
 
-          {/* Description Textarea */}
+          {/* Description */}
           <textarea
             value={description}
             onChange={handleDescriptionChange}
@@ -141,5 +224,6 @@ const App = () => {
     </div>
   );
 };
+
 
 export default App;
