@@ -153,6 +153,7 @@ const App = () => {
   return (
     <div className="App">
       <h1>Someplace Else</h1>
+      <p className="subtext">Drop a pinpoint, share a memory</p>
       <MapContainer
         center={[29.648668324475622, -82.34678527211761]} // Centered on UF
         zoom={17}

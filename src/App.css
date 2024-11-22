@@ -9,7 +9,7 @@ body {
 h1 {
   text-align: center;
   font-size: 2.5rem;
-  font-weight: 400;
+  font-weight: 700;
   margin-top: 20px;
   color: #5e6e77;
 }
@@ -75,4 +75,12 @@ textarea {
   width: 184px;
 }
 
+.subtext {
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 300;
+  margin: -20px 0; /* Adds spacing around the text */
+  margin-bottom: 10px; /* Increase spacing below the subtext */
+  color: #7a8a93; /* A subtle color for the subtext */
+}
 
