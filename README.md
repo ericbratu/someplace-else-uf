@@ -12,10 +12,10 @@ At its core, [Someplace Else](https://ericbratu.github.io/someplace-else-uf/) is
 ## **Technologies and Frameworks**
 - **React.js**: Used to build the frontend
 - **Leaflet.js**: Library used for rendering and managing the map on the frontend
-- **AWS Lambda**: In progress — developing serverless backend logic for handling API requests.
-- **AWS API Gateway**: In progress — configuring to manage API endpoints and connect the frontend to the backend.
-- **AWS DynamoDB**: In progress — setting up to store pinpoints, including coordinates, descriptions, and photos.
-- **GitHub Pages**: In progress — preparing to host the frontend and make the application publicly accessible.
+- **AWS Lambda**: Developed serverless backend logic for handling API requests.
+- **AWS API Gateway**: Configured to manage API endpoints and connect the frontend to the backend.
+- **AWS DynamoDB**: Set up to store pinpoints, including coordinates, descriptions, and photos.
+- **GitHub Pages**: Hosted the frontend and made the application publicly accessible.
 - **JavaScript, HTML, and CSS**: Core languages for developing the frontend and backend logic
 
 
